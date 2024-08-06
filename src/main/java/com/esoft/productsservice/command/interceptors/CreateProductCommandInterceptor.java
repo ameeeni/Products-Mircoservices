@@ -35,7 +35,10 @@ private final ProductLookupRepository productLookupRepository;
                CreateProductCommand createProductCommand = (CreateProductCommand) command.getPayload();
                ProductLookupEntity productLookupEntity =productLookupRepository.findProductByIdAndTitle(((CreateProductCommand) command.getPayload()).getId(), ((CreateProductCommand) command.getPayload()).getTitle());
                if(Objects.nonNull(productLookupEntity)){
-                   throw new IllegalStateException("Product already exists with id:" + productLookupEntity.getId());
+//                   throw new IllegalStateException("Product already exists with id:" + productLookupEntity.getId());
+                 throw new IllegalStateException(  String.format("Product With productId %s or title %s already exists",
+                           createProductCommand.getId(), createProductCommand.getTitle())
+                 );
                }
            }
             return command;
