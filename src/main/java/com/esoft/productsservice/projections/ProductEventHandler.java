@@ -6,6 +6,7 @@ import com.esoft.productsservice.repositories.ProductRepository;
 import org.axonframework.eventhandling.EventHandler;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 
 @Component
 public class ProductEventHandler {
@@ -14,8 +15,16 @@ public class ProductEventHandler {
     public ProductEventHandler(ProductRepository productRepository) {
         this.productRepository = productRepository;
     }
+        @ExceptionHandler(value=Exception.class)
+    public void handle(Exception exception) throws Exception {
+throw exception;
+    }
+@ExceptionHandler(value = IllegalArgumentException.class)
+public void handle(IllegalArgumentException exception) {
+
+}
     @EventHandler
-    public void on(ProductCreatedEvent event) {
+    public void on(ProductCreatedEvent event) throws Exception {
         //after the ProductCreatedEvent was handled after the command of creation
         // we will save what was created in the database
 
@@ -25,6 +34,12 @@ public class ProductEventHandler {
         product.setPrice(event.getPrice());
         product.setQuantity(event.getQuantity());
         //Saving the product in the database
-        productRepository.save(product);
+        try {
+            productRepository.save(product);
+        }catch (IllegalArgumentException e){
+            e.printStackTrace();
+        }
+        if(true) throw new  Exception("an Error occurred in the CreateProductCommand ");
+
     }
 }

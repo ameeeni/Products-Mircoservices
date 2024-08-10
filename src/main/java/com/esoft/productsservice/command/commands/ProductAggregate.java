@@ -25,7 +25,7 @@ public class ProductAggregate {
     private Integer quantity;
 
     @CommandHandler
-    public ProductAggregate(CreateProductCommand createProductCommand){
+    public ProductAggregate(CreateProductCommand createProductCommand) throws Exception {
      //Validate Create Command
         /**here we are validating the product items whenever the product is with
          * a valid data we will send the command to the Command Bus however we will
@@ -37,7 +37,6 @@ public class ProductAggregate {
         if(createProductCommand.getTitle().isBlank() || createProductCommand.getTitle()==null){
             throw new IllegalArgumentException("Title is blank");
         }
-        //apply to store the event in the event Store
         AggregateLifecycle.apply(
                 new ProductCreatedEvent(createProductCommand.getId(),
                         createProductCommand.getTitle(),
